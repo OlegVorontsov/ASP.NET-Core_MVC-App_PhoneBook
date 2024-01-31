@@ -58,7 +58,7 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-            [Bind("Phone,Note,ContactId")] ContactInfo contactInfo)
+            [Bind("ContactId,Phone,Note")] ContactInfo contactInfo)
         {
             if (ModelState.IsValid)
             {
