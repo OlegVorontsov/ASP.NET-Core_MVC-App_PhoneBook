@@ -34,7 +34,10 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
             }
 
             var contact = await _context.Contacts
-                .FirstOrDefaultAsync(m => m.Id == id);
+                        .Include(c => c.Infos)
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(i => i.Id == id);
+
             if (contact == null)
             {
                 return NotFound();
@@ -54,13 +57,24 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FName,LName,MName")] Contact contact)
+        public async Task<IActionResult> Create(
+            [Bind("FName,LName,MName")] Contact contact)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(contact);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    _context.Contacts.Add(contact);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (DbUpdateException)
+            {
+                //Log the error (uncomment ex variable name and write a log.
+                ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists " +
+                    "see your system administrator.");
             }
             return View(contact);
         }
@@ -117,7 +131,7 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
         }
 
         // GET: Contacts/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
         {
             if (id == null)
             {
@@ -125,10 +139,14 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
             }
 
             var contact = await _context.Contacts
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (contact == null)
+
+            if (saveChangesError.GetValueOrDefault())
             {
-                return NotFound();
+                ViewData["ErrorMessage"] =
+                    "Delete failed. Try again, and if the problem persists " +
+                    "see your system administrator.";
             }
 
             return View(contact);
@@ -140,9 +158,21 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var contact = await _context.Contacts.FindAsync(id);
-            _context.Contacts.Remove(contact);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            if (contact == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            try
+            {
+                _context.Contacts.Remove(contact);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException)
+            {
+                //Log the error (uncomment ex variable name and write a log.)
+                return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
+            }
         }
 
         private bool ContactExists(int id)
