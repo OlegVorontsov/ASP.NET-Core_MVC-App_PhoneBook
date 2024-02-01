@@ -33,7 +33,7 @@
             @Html.DisplayNameFor(model => model.Infos)
         </dt>
         <dd>
-            <a asp-controller="ContactInfoes" asp-action="Create">Create New</a>
+            <a asp-controller="ContactInfoes" asp-action="Create" asp-route-id="@Html.ViewData.Model.Id">Create New</a>
         </dd>
         <dd class="col-sm-10">
             <table class="table">

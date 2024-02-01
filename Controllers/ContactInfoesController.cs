@@ -45,9 +45,10 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
         }
 
         // GET: ContactInfoes/Create
-        public IActionResult Create()
+        public IActionResult Create(int? id)
         {
-            ViewData["ContactId"] = new SelectList(_context.Contacts, "Id", "Id");
+            //ViewData["ContactId"] = new SelectList(_context.Contacts, "Id", "Id");
+            ViewData["ContactId"] = id;
             return View();
         }
 
@@ -57,16 +58,17 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-            [Bind("ContactId,Phone,Note")] ContactInfo contactInfo)
+            [Bind("Phone,Note,ContactId")] ContactInfo contactInfo)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(contactInfo);
+                _context.ContactInfos.Add(contactInfo);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                Redirect("~/Contacts/Index");
             }
             ViewData["ContactId"] = new SelectList(_context.Contacts, "Id", "Id", contactInfo.ContactId);
-            return View(contactInfo);
+            //return View(contactInfo);
+            return Redirect("~/Contacts/Index");
         }
 
         // GET: ContactInfoes/Edit/5
