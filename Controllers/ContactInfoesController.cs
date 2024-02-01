@@ -116,7 +116,8 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                //return RedirectToAction(nameof(Index));
+                return Redirect("~/Contacts/Index");
             }
             ViewData["ContactId"] = new SelectList(_context.Contacts, "Id", "Id", contactInfo.ContactId);
             return View(contactInfo);
@@ -149,7 +150,8 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
             var contactInfo = await _context.ContactInfos.FindAsync(id);
             _context.ContactInfos.Remove(contactInfo);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            //return RedirectToAction(nameof(Index));
+            return Redirect("~/Contacts/Index");
         }
 
         private bool ContactInfoExists(int id)
