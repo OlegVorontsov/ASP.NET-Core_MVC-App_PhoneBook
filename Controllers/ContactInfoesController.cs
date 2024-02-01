@@ -33,7 +33,6 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
             {
                 return NotFound();
             }
-
             var contactInfo = await _context.ContactInfos
                 .Include(c => c.Contact)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -77,13 +76,12 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
             {
                 return NotFound();
             }
-
             var contactInfo = await _context.ContactInfos.FindAsync(id);
             if (contactInfo == null)
             {
                 return NotFound();
             }
-            ViewData["ContactId"] = new SelectList(_context.Contacts, "Id", "Id", contactInfo.ContactId);
+            //ViewData["ContactId"] = new SelectList(_context.Contacts, "Id", "Id", contactInfo.ContactId);
             return View(contactInfo);
         }
 
@@ -92,13 +90,14 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Phone,Note,ContactId")] ContactInfo contactInfo)
+        public async Task<IActionResult> Edit(int id,
+            [Bind("Id,Phone,Note,ContactId")] ContactInfo contactInfo)
+            //,ContactId")] ContactInfo contactInfo)
         {
             if (id != contactInfo.Id)
             {
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
                 try
