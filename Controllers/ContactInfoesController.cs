@@ -64,7 +64,6 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
             {
                 _context.ContactInfos.Add(contactInfo);
                 await _context.SaveChangesAsync();
-                Redirect("~/Contacts/Index");
             }
             ViewData["ContactId"] = new SelectList(_context.Contacts, "Id", "Id", contactInfo.ContactId);
             //return View(contactInfo);
