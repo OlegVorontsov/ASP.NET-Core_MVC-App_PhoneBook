@@ -20,9 +20,34 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
         }
 
         // GET: Contacts
-        public async Task<IActionResult> Index()
+        //public async Task<IActionResult> Index()
+        //{
+        //    return View(await _context.Contacts.ToListAsync());
+        //}
+
+        //sorting
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            return View(await _context.Contacts.ToListAsync());
+            ViewData["FNameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "fname_desc" : "";
+            ViewData["LNameSortParm"] = sortOrder == "LName" ? "lname_desc" : "LName";
+            var contacts = from c in _context.Contacts
+                           select c;
+            switch (sortOrder)
+            {
+                case "fname_desc":
+                    contacts = contacts.OrderByDescending(c => c.FName);
+                    break;
+                case "LName":
+                    contacts = contacts.OrderBy(c => c.LName);
+                    break;
+                case "lname_desc":
+                    contacts = contacts.OrderByDescending(c => c.LName);
+                    break;
+                default:
+                    contacts = contacts.OrderBy(c => c.FName);
+                    break;
+            }
+            return View(await contacts.AsNoTracking().ToListAsync());
         }
 
         // GET: Contacts/Details/5
