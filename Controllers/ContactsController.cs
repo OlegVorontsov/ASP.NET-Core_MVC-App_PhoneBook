@@ -26,12 +26,22 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
         //}
 
         //sorting
-        public async Task<IActionResult> Index(string sortOrder)
+        public async Task<IActionResult> Index(string sortOrder, string searchString)
         {
+            //sorting
             ViewData["FNameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "fname_desc" : "";
             ViewData["LNameSortParm"] = sortOrder == "LName" ? "lname_desc" : "LName";
+            //searching
+            ViewData["CurrentFilter"] = searchString;
+
             var contacts = from c in _context.Contacts
                            select c;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                contacts = contacts.Where(c => c.LName.Contains(searchString)
+                                       || c.FName.Contains(searchString));
+            }
             switch (sortOrder)
             {
                 case "fname_desc":
