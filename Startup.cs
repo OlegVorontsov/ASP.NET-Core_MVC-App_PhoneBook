@@ -9,7 +9,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ASP.NET_Core_MVC_App_PhoneBook.Data;
+using ASP.NET_Core_MVC_App_PhoneBook.AuthApp;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace ASP.NET_Core_MVC_App_PhoneBook
 {
@@ -24,9 +26,36 @@ namespace ASP.NET_Core_MVC_App_PhoneBook
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<PhoneBookContext>(options =>
-                        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-                        services.AddControllersWithViews();
+            services.AddDbContext<PhoneBookContext>(options => options.UseSqlServer(
+                        Configuration.GetConnectionString("DefaultConnection")));
+            
+            services.AddControllersWithViews();
+            services.AddMvc();
+
+            #region Auth
+            services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<PhoneBookContext>()
+                .AddDefaultTokenProviders();
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequiredLength = 6; // минимальное количество знаков в пароле
+                options.Lockout.MaxFailedAccessAttempts = 10; // количество попыток о блокировки
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
+                options.Lockout.AllowedForNewUsers = true;
+            });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                // конфигурация Cookie с целью использования их для хранения авторизации
+                options.Cookie.HttpOnly = true;
+                //options.Cookie.Expiration = TimeSpan.FromMinutes(30);
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+                options.LoginPath = "/Account/Login";
+                options.LogoutPath = "/Account/Logout";
+                options.SlidingExpiration = true;
+            });
+            #endregion
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -46,7 +75,8 @@ namespace ASP.NET_Core_MVC_App_PhoneBook
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            //app.UseAuthorization();
+            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {
@@ -54,6 +84,6 @@ namespace ASP.NET_Core_MVC_App_PhoneBook
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
-        }
+            }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using ASP.NET_Core_MVC_App_PhoneBook.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -18,6 +19,8 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
             _logger = logger;
         }
 
+        [HttpGet]
+        //[Authorize]
         public IActionResult Index()
         {
             return View();
