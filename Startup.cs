@@ -30,7 +30,6 @@ namespace ASP.NET_Core_MVC_App_PhoneBook
                         Configuration.GetConnectionString("DefaultConnection")));
             
             services.AddControllersWithViews();
-            services.AddMvc();
 
             #region Auth
             services.AddIdentity<User, IdentityRole>()
@@ -75,7 +74,7 @@ namespace ASP.NET_Core_MVC_App_PhoneBook
 
             app.UseRouting();
 
-            //app.UseAuthorization();
+            app.UseAuthorization();
             app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>

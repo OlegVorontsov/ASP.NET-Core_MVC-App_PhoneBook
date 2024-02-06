@@ -1,7 +1,7 @@
 ﻿@model ASP.NET_Core_MVC_App_PhoneBook.AuthApp.UserRegistration
 
 @{
-    ViewData["Title"] = "Регистрация";
+    ViewData["Title"] = "Registration";
 }
 
 <div class="container">
@@ -13,7 +13,13 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="col-xs-12">
                     <div class="form-group">
-                        <input asp-for="LoginProp" class="form-control" placeholder="LogIn" />
+                        <input asp-for="LoginProp" class="form-control" placeholder="User name" />
+                    </div>
+                </div>
+
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <input asp-for="Email" class="form-control" placeholder="Email" />
                     </div>
                 </div>
 
@@ -25,7 +31,7 @@
 
                 <div class="col-xs-12">
                     <div class="form-group">
-                        <input asp-for="ConfirmPassword" class="form-control" placeholder="ConfirmPassword" />
+                        <input asp-for="PasswordConfirm" class="form-control" placeholder="Confirm password" />
                     </div>
                 </div>
 

@@ -20,6 +20,37 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
         }
 
         [HttpGet]
+        public IActionResult Register()
+        {
+            //return View(new UserRegistration());
+            return View();
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(UserRegistration model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new User { UserName = model.LoginProp, Email = model.Email };
+                var createResult = await _userManager.CreateAsync(user, model.Password);
+
+                if (createResult.Succeeded)
+                {
+                    await _signInManager.SignInAsync(user, false);
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    foreach (var identityError in createResult.Errors)
+                    {
+                        ModelState.AddModelError("", identityError.Description);
+                    }
+                }
+            }
+            return View(model);
+        }
+
+        [HttpGet]
         public IActionResult Login(string returnUrl)
         {
             return View(new UserLogin()
@@ -33,49 +64,28 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
         {
             if (ModelState.IsValid)
             {
-                var loginResult = await _signInManager.PasswordSignInAsync(model.LoginProp,
+                var loginResult = await _signInManager.PasswordSignInAsync(
+                    model.Email,
                     model.Password,
-                    false,
-                    lockoutOnFailure: false);
+                    model.RememberMe,
+                    false);
+                //lockoutOnFailure: false);
 
                 if (loginResult.Succeeded)
                 {
-                    if (Url.IsLocalUrl(model.ReturnUrl))
+                    // проверяем, принадлежит ли URL приложению
+                    if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
                     {
                         return Redirect(model.ReturnUrl);
                     }
-                    return RedirectToAction("Index", "Home");
-                }
-            }
-            ModelState.AddModelError("", "Пользователь не найден");
-            return View(model);
-        }
-
-        [HttpGet]
-        public IActionResult Register()
-        {
-            return View(new UserRegistration());
-        }
-
-        [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(UserRegistration model)
-        {
-            if (ModelState.IsValid)
-            {
-                var user = new User { UserName = model.LoginProp };
-                var createResult = await _userManager.CreateAsync(user, model.Password);
-
-                if (createResult.Succeeded)
-                {
-                    await _signInManager.SignInAsync(user, false);
-                    return RedirectToAction("Index", "Home");
-                }
-                else//иначе
-                {
-                    foreach (var identityError in createResult.Errors)
+                    else
                     {
-                        ModelState.AddModelError("", identityError.Description);
+                        return RedirectToAction("Index", "Home");
                     }
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Wrong user name and (or) password");
                 }
             }
             return View(model);
