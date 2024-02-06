@@ -44,12 +44,9 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
                     {
                         return Redirect(model.ReturnUrl);
                     }
-
                     return RedirectToAction("Index", "Home");
                 }
-
             }
-
             ModelState.AddModelError("", "Пользователь не найден");
             return View(model);
         }
