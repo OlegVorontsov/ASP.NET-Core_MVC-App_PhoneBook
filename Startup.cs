@@ -32,7 +32,9 @@ namespace ASP.NET_Core_MVC_App_PhoneBook
             services.AddControllersWithViews();
 
             #region Auth
-            services.AddIdentity<User, IdentityRole>()
+            services.AddIdentity<User, IdentityRole>(options => {
+                options.User.RequireUniqueEmail = true;                                     // уникальный email
+                options.User.AllowedUserNameCharacters = ".@abcdefghijklmnopqrstuvwxyz"; }) // допустимые символы)
                 .AddEntityFrameworkStores<PhoneBookContext>()
                 .AddDefaultTokenProviders();
 

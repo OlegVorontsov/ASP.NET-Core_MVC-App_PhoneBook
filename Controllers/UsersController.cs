@@ -5,9 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using ASP.NET_Core_MVC_App_PhoneBook.AuthApp;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
 {
+    //[Authorize(Roles = "admin")]
     public class UsersController : Controller
     {
         UserManager<User> _userManager;
