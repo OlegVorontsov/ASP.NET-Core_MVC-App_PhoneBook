@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
 {
-    //[Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin")]
     public class UsersController : Controller
     {
         UserManager<User> _userManager;
@@ -44,6 +44,7 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
             }
             return View(model);
         }
+
         [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
@@ -106,6 +107,7 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
             ChangePassword model = new ChangePassword { Id = user.Id, Email = user.Email };
             return View(model);
         }
+
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePassword model)
         {
@@ -135,6 +137,5 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
             }
             return View(model);
         }
-
     }
 }

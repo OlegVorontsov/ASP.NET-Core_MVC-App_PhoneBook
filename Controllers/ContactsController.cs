@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ASP.NET_Core_MVC_App_PhoneBook.Data;
 using ASP.NET_Core_MVC_App_PhoneBook.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
 {
@@ -82,15 +83,14 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
         }
 
         // GET: Contacts/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Contacts/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
             [Bind("FName,LName,MName")] Contact contact)
@@ -115,6 +115,7 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
         }
 
         // GET: Contacts/Edit/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -130,10 +131,8 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
             return View(contact);
         }
 
-        // POST: Contacts/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
             int id, [Bind("Id,FName,LName,MName")] Contact contact)
@@ -167,6 +166,7 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
         }
 
         // GET: Contacts/Delete/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
         {
             if (id == null)
@@ -190,6 +190,7 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
 
         // POST: Contacts/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
 {
-    //[Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin")]
     public class RolesController : Controller
     {
         RoleManager<IdentityRole> _roleManager;

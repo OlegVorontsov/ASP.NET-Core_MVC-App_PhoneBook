@@ -69,25 +69,19 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
                     model.Password,
                     model.RememberMe,
                     false);
-                //lockoutOnFailure: false);
+                    //lockoutOnFailure: false);
 
                 if (loginResult.Succeeded)
                 {
-                    // проверяем, принадлежит ли URL приложению
-                    if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                    if (Url.IsLocalUrl(model.ReturnUrl))
                     {
                         return Redirect(model.ReturnUrl);
                     }
-                    else
-                    {
-                        return RedirectToAction("Index", "Home");
-                    }
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Wrong user name and (or) password");
+                    return RedirectToAction("Index", "Home");
                 }
             }
+
+            ModelState.AddModelError("", "Wrong user name and (or) password");
             return View(model);
         }
 

@@ -20,7 +20,6 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
         }
 
         [HttpGet]
-        //[Authorize]
         public IActionResult Index()
         {
             return View();

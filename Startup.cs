@@ -32,11 +32,13 @@ namespace ASP.NET_Core_MVC_App_PhoneBook
             services.AddControllersWithViews();
 
             #region Auth
-            services.AddIdentity<User, IdentityRole>(options => {
+            services.AddIdentity<User, IdentityRole>(options =>
+            {
                 options.User.RequireUniqueEmail = true;                                     // уникальный email
-                options.User.AllowedUserNameCharacters = ".@abcdefghijklmnopqrstuvwxyz"; }) // допустимые символы)
-                .AddEntityFrameworkStores<PhoneBookContext>()
-                .AddDefaultTokenProviders();
+                options.User.AllowedUserNameCharacters = ".@abcdefghijklmnopqrstuvwxyz";
+            }) // допустимые символы)
+                .AddEntityFrameworkStores<PhoneBookContext>();
+                //.AddDefaultTokenProviders();
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -51,7 +53,7 @@ namespace ASP.NET_Core_MVC_App_PhoneBook
                 // конфигурация Cookie с целью использования их для хранения авторизации
                 options.Cookie.HttpOnly = true;
                 //options.Cookie.Expiration = TimeSpan.FromMinutes(30);
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+                //options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
                 options.LoginPath = "/Account/Login";
                 options.LogoutPath = "/Account/Logout";
                 options.SlidingExpiration = true;
@@ -76,8 +78,8 @@ namespace ASP.NET_Core_MVC_App_PhoneBook
 
             app.UseRouting();
 
-            app.UseAuthorization();
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
