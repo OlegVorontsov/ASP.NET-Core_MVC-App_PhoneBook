@@ -167,7 +167,7 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
 
         // GET: Contacts/Delete/5
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
@@ -177,12 +177,9 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
             var contact = await _context.Contacts
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (saveChangesError.GetValueOrDefault())
+            if (contact == null)
             {
-                ViewData["ErrorMessage"] =
-                    "Delete failed. Try again, and if the problem persists " +
-                    "see your system administrator.";
+                return NotFound();
             }
 
             return View(contact);
@@ -199,17 +196,9 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
             {
                 return RedirectToAction(nameof(Index));
             }
-            try
-            {
-                _context.Contacts.Remove(contact);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            catch (DbUpdateException)
-            {
-                //Log the error (uncomment ex variable name and write a log.)
-                return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
-            }
+            _context.Contacts.Remove(contact);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         private bool ContactExists(int id)

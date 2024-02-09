@@ -150,9 +150,12 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var contactInfo = await _context.ContactInfos.FindAsync(id);
+            if (contactInfo == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
             _context.ContactInfos.Remove(contactInfo);
             await _context.SaveChangesAsync();
-            //return RedirectToAction(nameof(Index));
             return Redirect("~/Contacts/Index");
         }
 
