@@ -1,6 +1,22 @@
 ﻿@{
-    ViewData["Title"] = "Privacy Policy";
+    ViewData["Title"] = "Privacy";
 }
-<h1>@ViewData["Title"]</h1>
+<div class="jumbotron">
+    <h1>Privacy</h1>
+</div>
 
-<p>This is a free app. Enjoy it!</p>
+<div class="row">
+    <div class="col-md-4">
+        <h2>For registered users</h2>
+        <p>Add Contacts and Details</p>
+        <p>Download PhoneBook on <a asp-area="" asp-controller="Contacts" asp-action="Index">Contacts</a></p>
+        <p>You can't edit anything</p>
+    </div>
+    <div class="col-md-4">
+        <h2>For unregistered users</h2>
+        <p>View Contacts and Details</p>
+        <p>Download PhoneBook on <a asp-area="" asp-controller="Contacts" asp-action="Index">Contacts</a></p>
+        <p>You can't add or edit anything</p>
+    </div>
+</div>
+

@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using ASP.NET_Core_MVC_App_PhoneBook.Data;
 using Microsoft.AspNetCore.Identity;
 using ASP.NET_Core_MVC_App_PhoneBook.AuthApp;
+using System.IO;
 
 namespace ASP.NET_Core_MVC_App_PhoneBook
 {
@@ -35,7 +36,6 @@ namespace ASP.NET_Core_MVC_App_PhoneBook
                     logger.LogError(ex, "An error occurred while seeding the database.");
                 }
             }
-
             host.Run();
         }
 

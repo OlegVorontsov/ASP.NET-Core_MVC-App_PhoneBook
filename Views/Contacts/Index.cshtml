@@ -1,10 +1,17 @@
-﻿@model IEnumerable<ASP.NET_Core_MVC_App_PhoneBook.Models.Contact>
+﻿@using System.IO;
+
+@model IEnumerable<ASP.NET_Core_MVC_App_PhoneBook.Models.Contact>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+@if (File.Exists("Phonebook.txt"))
+    {
+        File.Delete("Phonebook.txt");
+        var file = File.Create("Phonebook.txt");
+        file.Close();
+    }
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -15,7 +22,8 @@
         <p>
             Find by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
             <input type="submit" value="Search" class="btn btn-default" /> |
-            <a asp-action="Index">Back to Full List</a>
+            <a asp-action="Index">Back to Full List</a> |
+            <a asp-action="GetPhoneBook">Download Phonebook</a>
         </p>
     </div>
 </form>
@@ -27,38 +35,38 @@
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["FNameSortParm"]">@Html.DisplayNameFor(model => model.FName)</a>
             </th>
             @*<th>
-                @Html.DisplayNameFor(model => model.FName)
-            </th>*@
+                    @Html.DisplayNameFor(model => model.FName)
+                </th>*@
             <th>
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["LNameSortParm"]">@Html.DisplayNameFor(model => model.LName)</a>
             </th>
             @*<th>
-                @Html.DisplayNameFor(model => model.LName)
-            </th>*@
+                    @Html.DisplayNameFor(model => model.LName)
+                </th>*@
             <th>
                 @Html.DisplayNameFor(model => model.MName)
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MName)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

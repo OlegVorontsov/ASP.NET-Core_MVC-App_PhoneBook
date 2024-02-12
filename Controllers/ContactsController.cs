@@ -8,16 +8,21 @@ using Microsoft.EntityFrameworkCore;
 using ASP.NET_Core_MVC_App_PhoneBook.Data;
 using ASP.NET_Core_MVC_App_PhoneBook.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.IO;
+using System.Text;
+using Microsoft.AspNetCore.Hosting;
 
 namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
 {
     public class ContactsController : Controller
     {
         private readonly PhoneBookContext _context;
+        private IHostingEnvironment appEnvironment;
 
-        public ContactsController(PhoneBookContext context)
+        public ContactsController(PhoneBookContext context, IHostingEnvironment AppHostingEnvironment)
         {
             _context = context;
+            appEnvironment = AppHostingEnvironment;
         }
 
         // GET: Contacts
@@ -204,6 +209,39 @@ namespace ASP.NET_Core_MVC_App_PhoneBook.Controllers
         private bool ContactExists(int id)
         {
             return _context.Contacts.Any(e => e.Id == id);
+        }
+
+        public async Task<IActionResult> GetPhoneBook()
+        {
+            if (ModelState.IsValid)
+            {
+                var contacts = _context.Contacts
+                               .Include(c => c.Infos)
+                               .ToList();
+
+                await using (StreamWriter sw = new StreamWriter("Phonebook.txt", true, Encoding.UTF8))
+                {
+                    foreach (var contact in contacts)
+                    {
+                        string contactLine = string.Empty;
+                        contactLine = $"\n{contact.FName}\t| " +
+                                      $"{contact.LName}\t| " +
+                                      $"{contact.MName}";
+                        sw.WriteLine(contactLine);
+                        foreach (var info in contact.Infos)
+                        {
+                            string infoLine = string.Empty;
+                            infoLine = $"\t{info.Phone} | " +
+                                       $"{info.Note}";
+                            sw.WriteLine(infoLine);
+                        }
+                    }
+                }
+            }
+            return PhysicalFile(
+                   physicalPath: $@"{appEnvironment.ContentRootPath}\Phonebook.txt",
+                   contentType: "Application/txt",
+                   fileDownloadName: $"YourPhonebook.txt");
         }
     }
 }
